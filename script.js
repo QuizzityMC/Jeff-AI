@@ -11,7 +11,7 @@ document.getElementById('send').addEventListener('click', async () => {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer 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'
+                'Authorization': 'Bearer YOUR_HUGGINGFACE_API_KEY'
             },
             body: JSON.stringify({
                 inputs: input
