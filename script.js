@@ -1,3 +1,6 @@
+import * as tf from '@tensorflow/tfjs';
+import { pipeline } from '@huggingface/transformers';
+
 document.getElementById('send').addEventListener('click', async () => {
     const input = document.getElementById('input').value;
     if (input.trim() === '') return;
@@ -6,33 +9,14 @@ document.getElementById('send').addEventListener('click', async () => {
     messageContainer.textContent = 'You: ' + input;
     document.getElementById('messages').appendChild(messageContainer);
 
-    try {
-        const response = await fetch('https://api-inference.huggingface.co/models/distilgpt2', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer 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'
-            },
-            body: JSON.stringify({
-                inputs: input
-            })
-        });
+    const model = await pipeline('text-generation', 'distilgpt2');
 
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
+    const result = await model(input, { max_length: 50 });
+    const output = result[0].generated_text;
 
-        const data = await response.json();
-
-        const replyContainer = document.createElement('div');
-        replyContainer.textContent = 'AI: ' + data[0].generated_text;
-        document.getElementById('messages').appendChild(replyContainer);
-    } catch (error) {
-        console.error('Error:', error);
-        const errorContainer = document.createElement('div');
-        errorContainer.textContent = `Error: ${error.message}`;
-        document.getElementById('messages').appendChild(errorContainer);
-    }
+    const replyContainer = document.createElement('div');
+    replyContainer.textContent = 'AI: ' + output;
+    document.getElementById('messages').appendChild(replyContainer);
 
     document.getElementById('input').value = '';
 });
