@@ -1,5 +1,4 @@
 const responses = {
-const responses = {
     "hello": "Hi there! How can I assist you today?",
     "how are you": "I'm just a bunch of code, but thanks for asking!",
     "what's your name": "I am your friendly AI chatbot!",
