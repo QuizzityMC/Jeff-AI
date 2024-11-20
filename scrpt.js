@@ -7,7 +7,7 @@ document.getElementById('send').addEventListener('click', async () => {
     document.getElementById('messages').appendChild(messageContainer);
 
     try {
-        const response = await fetch('https://api-inference.huggingface.co/models/gpt2', {
+        const response = await fetch('https://api-inference.huggingface.co/models/distilbert-base-uncased', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
