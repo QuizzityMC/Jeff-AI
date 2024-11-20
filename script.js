@@ -7,7 +7,7 @@ document.getElementById('send').addEventListener('click', async () => {
     document.getElementById('messages').appendChild(messageContainer);
 
     try {
-        const response = await fetch('https://api-inference.huggingface.co/models/distilbert-base-uncased', {
+        const response = await fetch('https://api-inference.huggingface.co/models/gpt2', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -17,18 +17,21 @@ document.getElementById('send').addEventListener('click', async () => {
                 inputs: input
             })
         });
+
         if (!response.ok) {
-            throw new Error('Network response was not ok');
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
+
         const data = await response.json();
+        console.log('API response:', data); // Log the entire response
 
         const replyContainer = document.createElement('div');
-        replyContainer.textContent = 'AI: ' + (data.generated_text || 'No response');
+        replyContainer.textContent = 'AI: ' + data[0].generated_text;
         document.getElementById('messages').appendChild(replyContainer);
     } catch (error) {
-        console.error('Error:', error);
+        console.error('Error:', error); // Log the error
         const errorContainer = document.createElement('div');
-        errorContainer.textContent = 'Error: Could not retrieve response';
+        errorContainer.textContent = `Error: ${error.message}`;
         document.getElementById('messages').appendChild(errorContainer);
     }
 
