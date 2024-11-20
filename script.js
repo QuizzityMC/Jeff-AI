@@ -9,13 +9,13 @@ document.getElementById('send').addEventListener('click', async () => {
     document.getElementById('messages').appendChild(messageContainer);
 
     if (!model) {
-        model = await toxicity.load(0.9);  // Load the toxicity model
+        model = await qna.load();  // Load the QnA model
     }
 
-    const predictions = await model.classify([input]);
+    const answers = await model.findAnswers(input, document.body.innerText);
     let response = "I'm here to listen!";
-    if (predictions.some(prediction => prediction.results[0].match)) {
-        response = "Let's keep the conversation positive!";
+    if (answers && answers.length > 0) {
+        response = answers[0].text;
     }
 
     const replyContainer = document.createElement('div');
