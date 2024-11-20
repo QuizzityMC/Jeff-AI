@@ -7,15 +7,15 @@ document.getElementById('send').addEventListener('click', async () => {
     document.getElementById('messages').appendChild(messageContainer);
 
     try {
-        const response = await fetch('https://api.cohere.ai/generate', {
+        const response = await fetch('https://api.cohere.ai/v1/chat', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer VsFl8dFdI8j5oK72jGoCRjN3Gs7lCkBZ2xiR5MDK'
             },
             body: JSON.stringify({
-                prompt: input,
-                model: 'medium',
+                message: input,
+                model: 'command-r-plus-08-2024',
                 max_tokens: 100,
                 temperature: 0.7
             })
@@ -28,7 +28,7 @@ document.getElementById('send').addEventListener('click', async () => {
         const data = await response.json();
 
         const replyContainer = document.createElement('div');
-        replyContainer.textContent = 'AI: ' + data.generations[0].text;
+        replyContainer.textContent = 'AI: ' + data.message;
         document.getElementById('messages').appendChild(replyContainer);
     } catch (error) {
         console.error('Error:', error);
