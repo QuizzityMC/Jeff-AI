@@ -1,31 +1,38 @@
-body {
-    font-family: Arial, sans-serif;
-    text-align: center;
-    padding: 50px;
-}
+document.getElementById('send').addEventListener('click', async () => {
+    const input = document.getElementById('input').value;
+    if (input.trim() === '') return;
 
-#chatbox {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-}
+    const messageContainer = document.createElement('div');
+    messageContainer.textContent = 'You: ' + input;
+    document.getElementById('messages').appendChild(messageContainer);
 
-#messages {
-    height: 300px;
-    overflow-y: auto;
-    border-bottom: 1px solid #ccc;
-    margin-bottom: 10px;
-    padding: 10px;
-}
+    try {
+        const response = await fetch('https://api-inference.huggingface.co/models/microsoft/DialoGPT-medium', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer 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'
+            },
+            body: JSON.stringify({
+                inputs: input
+            })
+        });
 
-#input {
-    width: 80%;
-    padding: 10px;
-}
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
 
-#send {
-    padding: 10px 20px;
-}
+        const data = await response.json();
+
+        const replyContainer = document.createElement('div');
+        replyContainer.textContent = 'AI: ' + data[0].generated_text;
+        document.getElementById('messages').appendChild(replyContainer);
+    } catch (error) {
+        console.error('Error:', error);
+        const errorContainer = document.createElement('div');
+        errorContainer.textContent = `Error: ${error.message}`;
+        document.getElementById('messages').appendChild(errorContainer);
+    }
+
+    document.getElementById('input').value = '';
+});
