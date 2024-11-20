@@ -7,11 +7,11 @@ document.getElementById('send').addEventListener('click', async () => {
     document.getElementById('messages').appendChild(messageContainer);
 
     try {
-        const response = await fetch('https://api-inference.huggingface.co/models/gpt2', {
+        const response = await fetch('https://api-inference.huggingface.co/models/distilgpt2', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer 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'
+                'Authorization': 'Bearer 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'
             },
             body: JSON.stringify({
                 inputs: input
@@ -23,13 +23,12 @@ document.getElementById('send').addEventListener('click', async () => {
         }
 
         const data = await response.json();
-        console.log('API response:', data); // Log the entire response
 
         const replyContainer = document.createElement('div');
         replyContainer.textContent = 'AI: ' + data[0].generated_text;
         document.getElementById('messages').appendChild(replyContainer);
     } catch (error) {
-        console.error('Error:', error); // Log the error
+        console.error('Error:', error);
         const errorContainer = document.createElement('div');
         errorContainer.textContent = `Error: ${error.message}`;
         document.getElementById('messages').appendChild(errorContainer);
