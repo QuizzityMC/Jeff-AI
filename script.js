@@ -7,14 +7,15 @@ document.getElementById('send').addEventListener('click', async () => {
     document.getElementById('messages').appendChild(messageContainer);
 
     try {
-        const response = await fetch('https://api-inference.huggingface.co/models/microsoft/DialoGPT-medium', {
+        const response = await fetch('https://api.openai.com/v1/engines/davinci-codex/completions', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer YOUR_HUGGINGFACE_API_KEY'
+                'Authorization': 'Bearer sk-1234qrstuvwxabcd1234qrstuvwxabcd1234qrst'
             },
             body: JSON.stringify({
-                inputs: input
+                prompt: input,
+                max_tokens: 150
             })
         });
 
@@ -25,7 +26,7 @@ document.getElementById('send').addEventListener('click', async () => {
         const data = await response.json();
 
         const replyContainer = document.createElement('div');
-        replyContainer.textContent = 'AI: ' + data[0].generated_text;
+        replyContainer.textContent = 'AI: ' + data.choices[0].text;
         document.getElementById('messages').appendChild(replyContainer);
     } catch (error) {
         console.error('Error:', error);
