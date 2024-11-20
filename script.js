@@ -1,5 +1,3 @@
-let model;
-
 document.getElementById('send').addEventListener('click', async () => {
     const input = document.getElementById('input').value;
     if (input.trim() === '') return;
@@ -8,19 +6,36 @@ document.getElementById('send').addEventListener('click', async () => {
     messageContainer.textContent = 'You: ' + input;
     document.getElementById('messages').appendChild(messageContainer);
 
-    if (!model) {
-        model = await toxicity.load(0.9);  // Load the toxicity model
-    }
+    try {
+        const response = await fetch('https://api.cohere.ai/generate', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer VsFl8dFdI8j5oK72jGoCRjN3Gs7lCkBZ2xiR5MDK'
+            },
+            body: JSON.stringify({
+                prompt: input,
+                model: 'medium',
+                max_tokens: 100,
+                temperature: 0.7
+            })
+        });
 
-    const answers = await model.classify(input);
-    let response = "I'm here to listen!";
-    if (answers && answers.length > 0) {
-        response = answers[0].label;
-    }
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
 
-    const replyContainer = document.createElement('div');
-    replyContainer.textContent = 'AI: ' + response;
-    document.getElementById('messages').appendChild(replyContainer);
+        const data = await response.json();
+
+        const replyContainer = document.createElement('div');
+        replyContainer.textContent = 'AI: ' + data.generations[0].text;
+        document.getElementById('messages').appendChild(replyContainer);
+    } catch (error) {
+        console.error('Error:', error);
+        const errorContainer = document.createElement('div');
+        errorContainer.textContent = `Error: ${error.message}`;
+        document.getElementById('messages').appendChild(errorContainer);
+    }
 
     document.getElementById('input').value = '';
 });
