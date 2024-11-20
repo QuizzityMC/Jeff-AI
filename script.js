@@ -1,3 +1,5 @@
+let model;
+
 document.getElementById('send').addEventListener('click', async () => {
     const input = document.getElementById('input').value;
     if (input.trim() === '') return;
@@ -6,34 +8,19 @@ document.getElementById('send').addEventListener('click', async () => {
     messageContainer.textContent = 'You: ' + input;
     document.getElementById('messages').appendChild(messageContainer);
 
-    try {
-        const response = await fetch('https://api.openai.com/v1/engines/davinci-codex/completions', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer sk-1234qrstuvwxabcd1234qrstuvwxabcd1234qrst'
-            },
-            body: JSON.stringify({
-                prompt: input,
-                max_tokens: 150
-            })
-        });
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data = await response.json();
-
-        const replyContainer = document.createElement('div');
-        replyContainer.textContent = 'AI: ' + data.choices[0].text;
-        document.getElementById('messages').appendChild(replyContainer);
-    } catch (error) {
-        console.error('Error:', error);
-        const errorContainer = document.createElement('div');
-        errorContainer.textContent = `Error: ${error.message}`;
-        document.getElementById('messages').appendChild(errorContainer);
+    if (!model) {
+        model = await toxicity.load(0.9);  // Load the toxicity model
     }
+
+    const predictions = await model.classify([input]);
+    let response = "I'm here to listen!";
+    if (predictions.some(prediction => prediction.results[0].match)) {
+        response = "Let's keep the conversation positive!";
+    }
+
+    const replyContainer = document.createElement('div');
+    replyContainer.textContent = 'AI: ' + response;
+    document.getElementById('messages').appendChild(replyContainer);
 
     document.getElementById('input').value = '';
 });
