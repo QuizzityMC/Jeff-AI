@@ -1,22 +1,31 @@
-import * as tf from '@tensorflow/tfjs';
-import { pipeline } from '@huggingface/transformers';
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 50px;
+}
 
-document.getElementById('send').addEventListener('click', async () => {
-    const input = document.getElementById('input').value;
-    if (input.trim() === '') return;
+#chatbox {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
 
-    const messageContainer = document.createElement('div');
-    messageContainer.textContent = 'You: ' + input;
-    document.getElementById('messages').appendChild(messageContainer);
+#messages {
+    height: 300px;
+    overflow-y: auto;
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 10px;
+    padding: 10px;
+}
 
-    const model = await pipeline('text-generation', 'distilgpt2');
+#input {
+    width: 80%;
+    padding: 10px;
+}
 
-    const result = await model(input, { max_length: 50 });
-    const output = result[0].generated_text;
-
-    const replyContainer = document.createElement('div');
-    replyContainer.textContent = 'AI: ' + output;
-    document.getElementById('messages').appendChild(replyContainer);
-
-    document.getElementById('input').value = '';
-});
+#send {
+    padding: 10px 20px;
+}
