@@ -17,10 +17,13 @@ document.getElementById('send').addEventListener('click', async () => {
                 inputs: input
             })
         });
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
         const data = await response.json();
 
         const replyContainer = document.createElement('div');
-        replyContainer.textContent = 'AI: ' + data[0].generated_text;
+        replyContainer.textContent = 'AI: ' + (data.generated_text || 'No response');
         document.getElementById('messages').appendChild(replyContainer);
     } catch (error) {
         console.error('Error:', error);
